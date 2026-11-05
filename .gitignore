@@ -1,0 +1,10 @@
+# C# files
+bin/
+obj/
+
+# Node.js files
+node_modules/
+
+# Environment and DB files
+.env
+*.db 

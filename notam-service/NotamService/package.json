@@ -1,0 +1,19 @@
+{
+  "name": "notamservice",
+  "version": "1.0.0",
+  "description": "The NOTAM Service is a web-based Microservice, responsible for fetching, parsing and processing NOTAMs for pre-flight safety checks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "FLYTE"
+  ],
+  "author": "Callum Miller",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.3.0"
+  }
+}

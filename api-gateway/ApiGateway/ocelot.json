@@ -1,0 +1,19 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/notams/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndParts": [ 
+                {
+                "Host:": "localhost",
+                "Port": 3000
+                }
+            ],
+            "UpstreamPathTemplate": "/api/notams/{everything}",
+            "UpstreamHttpMethod": ["GET", "POST"]
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "http://localhost:3001"
+    }
+}

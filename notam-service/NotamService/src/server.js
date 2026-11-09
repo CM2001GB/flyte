@@ -2,7 +2,7 @@
 // we use port 3001 for development/testing/fallback purposes
 
 const app = require('./app');
-const PORT = process.env.port || 3001;
+const PORT = process.env.port || 3000;
 
 app.listen(PORT, () => {
     console.log(`NOTAM service running on port ${PORT}`);

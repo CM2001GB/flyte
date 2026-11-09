@@ -21,6 +21,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API#examples
 
 function geoFindMe() {
+  let userLocation = { lat: null, lon: null } // non-const var for user location
   const status = document.querySelector("#status");
   const mapLink = document.querySelector("#map-link");
 
@@ -30,6 +31,14 @@ function geoFindMe() {
   function success(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
+
+    userLocation.lat = latitude; // set user lat
+    userLocation.lon = longitude; // set user lon
+
+    // send to backend
+    fetch(`http://localhost:3000/notams/nearby?lat=${latitude}&lon=${longitude}&radius=50`)
+      .then(res => res.json())
+      .then(data => console.log(data));
 
     status.textContent = "";
     mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;

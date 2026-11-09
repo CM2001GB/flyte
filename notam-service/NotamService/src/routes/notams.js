@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 
-const { haversineKm } = require('./HaversineKm.js');
-const { fetchNotams, parseNotams } = require('./NatsPibClient');
+const { haversineKm } = require('../../services/HaversineKm.js');
+const { fetchNotams, parseNotams } = require('../../services/NatsPibClient.js');
+const { classifyNotam } = require('../../services/notam-classifier.js');
 
 // ---------------------------------------
 // GET /notams - get NOTAMS for DB
@@ -16,14 +17,15 @@ router.get('/notams', (req, res) => {
     parseNotams();
 })
 
-// ---------------------------------------
+// --------------------------------------- 
 // GET /notams/nearby - get nearby NOTAM by user lat/lon
 // ---------------------------------------
 
 router.get('/nearby', (req, res) => {
+    
     const { lat, lon, radius = 50} = req.query;
 
-    if (!lat | !lon) {
+    if (!lat || !lon) {
         return res.status(400).json({
             error: 'Missing required query parameters: lat, lon.'
         });
@@ -55,7 +57,8 @@ router.get('/nearby', (req, res) => {
         .map(notam => {
             const distance = haversineKm(parsedLat, parsedLon,
                 notam.latitude, notam.longitude);
-            return { ...notam, distance_km: distance };
+            const classification = classifyNotam(notam.q_code);
+            return { ...notam, distance_km: distance, ...classification };
         })
         .filter(notam => notam.distance_km <= parsedRadius)
         .sort((a, b) => a.distance_km - b.distance_km);
@@ -104,14 +107,22 @@ router.get('/check', (req, res) => {
     // 2: filter distance using Haversine
     // notam is 'in range' if the distance between the query point
     // and the NOTAM's centre is less than the query radius + NOTAM radius
-    const inRange = activeNotams.filter((notam) => {
+    const inRange = activeNotams
+    .filter((notam) => {
         const distance = haversineKm(parsedLat, parsedLon,
             notam.latitude, notam.longitude);
         return distance <= parsedRadius + notam.radius;
+    })
+    .map(notam => {
+        const classification = classifyNotam(notam.q_code);
+        return { ...notam, ...classification };
     });
 
+    // can fly only if no restrictive notams are in range of user
+    const canFly = inRange.every(n => n.level !== "restrictive");
+
     res.json({
-        safe: inRange.length === 0,
+        safe: canFly,
         active_notams: inRange,
         checked_at: new Date().toISOString()
     });

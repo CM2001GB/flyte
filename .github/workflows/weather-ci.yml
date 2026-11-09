@@ -1,0 +1,19 @@
+name: weather-service CI
+on:
+  push:
+    paths: ['weather-service/**']
+  pull_request:
+    paths: ['weather-service/**']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: weather-service/WeatherService
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci || npm install
+      - run: npm test

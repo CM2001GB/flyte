@@ -2,28 +2,71 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 
-// Return distance (in km) between two points using Haversine distance
-// Inspiration for haversineKm func is the code written by Ayushman Chaturvedi
-// https://dev.to/ayushman/measure-distance-between-two-locations-in-javascript-using-the-haversine-formula-7dc
-// Full disclosure I am not a mathematician and this has been cobbled together from various examples I could find and is 
-// very much likely to be changed before FLYTE is ready for demonstration, no-one touch this thank you.
+const { haversineKm } = require('./HaversineKm.js');
+const { fetchNotams, parseNotams } = require('./NatsPibClient');
 
-function haversineKm(lat1, lon1, lat2, lon2) {
-    radius = 6371; // earth's approximate radius in km
-    const toRad = (deg) => (deg * Math.PI) / 180;
+// ---------------------------------------
+// GET /notams - get NOTAMS for DB
+// ---------------------------------------
 
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
+// in theory this function is literally just going to call NatsPibClient.js fetch/parse xml functions
+// to ensure the DB is populated/refreshed before the user's specific notam is fetched
+router.get('/notams', (req, res) => {
+    fetchNotams();
+    parseNotams();
+})
 
-    const a = 
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return radius * c;
-}
+// ---------------------------------------
+// GET /notams/nearby - get nearby NOTAM by user lat/lon
+// ---------------------------------------
 
+router.get('/nearby', (req, res) => {
+    const { lat, lon, radius = 50} = req.query;
+
+    if (!lat | !lon) {
+        return res.status(400).json({
+            error: 'Missing required query parameters: lat, lon.'
+        });
+    }
+
+    const parsedLat = parseFloat(lat);
+    const parsedLon = parseFloat(lon);
+    const parsedRadius = parseFloat(radius);
+
+    if (isNaN(parsedLat) || isNaN(parsedLon) || isNaN(parsedRadius)) {
+        return res.status(400).json({
+            error: 'lat, lon, and radius must be valid numbers.'
+        });
+    }
+
+    const degRange = parsedRadius / 111;
+    const notam_candidates = db.prepare(`
+        SELECT * FROM notams
+        WHERE latitude is NOT NULL
+        AND latitude BETWEEN ? AND ?
+        AND longitude BETWEEN ? and ?
+        AND end_date >= datetime('now')
+    `).all(
+        parsedLat - degRange, parsedLat + degRange,
+        parsedLon - degRange, parsedLon + degRange
+   );
+   // run haversine filter and add the distance to each result
+   const nearby = notam_candidates
+        .map(notam => {
+            const distance = haversineKm(parsedLat, parsedLon,
+                notam.latitude, notam.longitude);
+            return { ...notam, distance_km: distance };
+        })
+        .filter(notam => notam.distance_km <= parsedRadius)
+        .sort((a, b) => a.distance_km - b.distance_km);
+
+    res.json({
+        count: nearby.length,
+        location: { lat: parsedLat, lon: parsedLon },
+        radius_km: parsedRadius,
+        notams: nearby
+    });
+});
 
 // ---------------------------------------
 // GET /notams/check - pre-flight safety query, defined before "check" to avoid 
@@ -75,7 +118,7 @@ router.get('/check', (req, res) => {
 });
 
 // ---------------------------------------
-// POST /notams - create new notam
+// POST /notams - create new notam - TEST
 // ---------------------------------------
 
 router.post('/', (req, res) => {
@@ -116,13 +159,13 @@ router.post('/', (req, res) => {
     );
 
     // fetch new row, and return it
-    const created = db.prepare(`SELECT * FROM notams WHERE id = ?`).get(result.lastInsertRowid);
+    const created = db.prepare(`SELECT * FROM notams WHERE notamId = ?`).get(result.lastInsertRowid);
 
     res.status(201).json(created);
 });
 
 // ---------------------------------------
-// GET /notams - List all NOTAMs
+// GET /notams - List all NOTAMs - TEST
 // ---------------------------------------
 router.get('/', (req, res) => {
     const notams = db.prepare('SELECT * FROM notams').all();
@@ -130,11 +173,11 @@ router.get('/', (req, res) => {
 })
 
 // ---------------------------------------
-// GET /notams/:id - get single notam by ID
+// GET /notams/:id - get single notam by ID - TEST
 // ---------------------------------------
 
 router.get('/:id', (req, res) => {
-    const notam = db.prepare('SELECT * FROM notams WHERE id = ?').get(req.params.id);
+    const notam = db.prepare('SELECT * FROM notams WHERE notamId = ?').get(req.params.id);
 
     if (!notam) {
         return res.status(404).json({ error: 'NOTAM not found.'});

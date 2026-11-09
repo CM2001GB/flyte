@@ -1,7 +1,7 @@
 // test-parser.js
-const { fetchNotams, parseNotams } = require('./NatsPibClient');
+const { fetchNotams, parseNotams } = require('../../services/NatsPibClient');
 
-// Add this to your test to see the NOTAM structure
+// test to see the NOTAM structure
 async function test1() {
     const xml = await fetchNotams();
     const json = await parseNotams(xml);
@@ -12,7 +12,7 @@ async function test1() {
         console.log(`\n--- FIR ${i} ---`);
         console.log('Keys:', Object.keys(fir));
 
-        // Find where the NOTAMs live
+        // find where the NOTAMs live
         const notams = fir.Notam || fir.NOTAMList || fir.NotamList;
         if (notams) {
             const first = Array.isArray(notams) ? notams[0] : notams;

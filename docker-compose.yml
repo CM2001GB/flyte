@@ -1,0 +1,58 @@
+services:
+
+  notam-service:
+    build:
+      context: ./notam-service/NotamService
+    ports:
+      - "3000:3000"
+    volumes:
+      - notam-data:/app/data
+    networks:
+      - flyte-network
+
+  weather-service:
+    build:
+      context: ./weather-service/WeatherService
+    ports:
+      - "8001:8001"
+    networks:
+      - flyte-network
+
+  orchestrator:
+    build:
+      context: ./orchestrator/Orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - ASPNETCORE_URLS=http://+:3002
+      # inside Docker, services talk by container name, not localhost
+      - NotamService__BaseUrl=http://notam-service:3000
+      - WeatherService__BaseUrl=http://weather-service:8001
+    depends_on:
+      - notam-service
+      - weather-service
+    networks:
+      - flyte-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway/ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "7000:7000"
+    environment:
+      - ASPNETCORE_URLS=http://+:7000
+    depends_on:
+      - orchestrator
+      - notam-service
+      - weather-service
+    networks:
+      - flyte-network
+
+volumes:
+  notam-data: # named volume so DB survives container restarts
+
+networks:
+  flyte-network:
+    driver: bridge  # containers share this network and find each other by name

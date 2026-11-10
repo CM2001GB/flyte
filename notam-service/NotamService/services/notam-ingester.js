@@ -45,6 +45,9 @@ async function ingestNotams() {
     const json = await parseNotams(xml);
     const firSections = json.Pib.FIRSection;
 
+    // wipes data from db on each ingest to avoid stale notams
+    db.prepare('DELETE FROM notams').run();
+
     const insert = db.prepare(`
         INSERT OR REPLACE INTO notams
         (notam_id, fir, location, coordinates_raw, latitude, longitude,
@@ -132,8 +135,10 @@ async function ingestNotams() {
 
 module.exports = { ingestNotams };
 
-ingestNotams().then(() => {
-    console.log('Done');
-}).catch(err => {
-    console.error('Ingestion failed:', err);
-});
+if (require.main === module) {
+    ingestNotams().then(() => {
+        console.log('Done');
+    }).catch(err => {
+        console.error('Ingestion failed:', err);
+    });
+}

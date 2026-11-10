@@ -20,6 +20,9 @@
 // for FLYTE services that require the user's location
 // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API/Using_the_Geolocation_API#examples
 
+// global user location for all services to use
+var userLocation = { lat: null, lon: null};
+
 function geoFindMe() {
   const status = document.querySelector("#status");
   const mapLink = document.querySelector("#map-link");
@@ -30,6 +33,9 @@ function geoFindMe() {
   function success(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
+
+    userLocation.lat = latitude; // set user lat
+    userLocation.lon = longitude; // set user lon
 
     status.textContent = "";
     mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;

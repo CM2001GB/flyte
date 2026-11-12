@@ -11,14 +11,14 @@ public class SunriseSunsetServiceClient
     public SunriseSunsetServiceClient(IHttpClientFactory httpClientFactory,
         ILogger<SunriseSunsetServiceClient> logger)
     {
-        _client = httpClientFactory.CreateClient("SunsetSunriseService");
+        _client = httpClientFactory.CreateClient("SunriseSunsetService");
         _logger = logger;
     }
 
-    /// calls GET /sunrise-sunset/evaluate and returns the standardised verdict.
-    public async Task<ServiceVerdict> EvaluateAsync(double lat, double lon, double radius)
+    /// calls GET /sunrise-sunset and returns the standardised verdict.
+    public async Task<ServiceVerdict> EvaluateAsync(double lat, double lon, string flightDateTime)
     {
-        var url = $"/sunrise-sunset/evaluate?lat={lat}&lon={lon}&radius={radius}";
+        var url = $"/sunrise-sunset?lat={lat}&lon={lon}&datetime={flightDateTime}";
         _logger.LogInformation("Calling SunriseSunsetService: {Url}", url);
 
         var response = await _client.GetAsync(url);

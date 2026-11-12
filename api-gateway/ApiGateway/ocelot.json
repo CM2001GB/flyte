@@ -26,15 +26,6 @@
             ],
             "UpstreamPathTemplate": "/api/weather",
             "UpstreamHttpMethod": [ "GET" ]
-        },
-{
-            "DownstreamPathTemplate": "/sunrise-sunset/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                { "Host": "localhost", "Port": 3010 }
-            ],
-            "UpstreamPathTemplate": "/api/sunrise-sunset/{everything}",
-            "UpstreamHttpMethod": [ "GET" ]
         }
     ],
     "GlobalConfiguration": {

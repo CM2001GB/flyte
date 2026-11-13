@@ -10,10 +10,11 @@ db.pragma('journal_mode = WAL'); // Write-Ahead-Logging for seamless read-right 
 
 // Execute query to create a table on startup
 db.exec(`
-    CREATE TABLE IF NOT EXISTS flight_sessions (
+    CREATE TABLE IF NOT EXISTS flights (
         id              INTEGER PRIMARY KEY AUTOINCREMENT,
         flight_id       TEXT    UNIQUE NOT NULL,
         user_id         TEXT    NOT NULL,
+        location        TEXT    NOT NULL,
         date            TEXT    NOT NULL,
         start_time      TEXT    NOT NULL,
         end_time        TEXT    NOT NULL,

@@ -8,3 +8,6 @@ node_modules/
 # Environment and DB files
 .env
 *.db 
+# Python
+__pycache__/
+*.pyc

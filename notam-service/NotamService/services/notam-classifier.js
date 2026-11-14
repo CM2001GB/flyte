@@ -91,4 +91,34 @@ function classifyNotam(qCode) { // qcodes consist of 4 letters, if less than 4 r
 
 }
 
-module.exports = { classifyNotam };
+// allows flights in restricted notams if a UAS exemption is present
+function checkUasExemption(description) {
+    // no description means no reason for exemption, return null
+    if (!description || typeof description !== "string") {
+        return { exempt: false, reason: null };
+    }
+
+    const text = description.toUpperCase();
+
+    // key exemption phrases that appear in notam descriptions that signal exception
+    const exemptionPhrases = [
+        "DOES NOT APPLY TO ANY UAS FLYING IN ACCORDANCE",
+        "BRIEFING SHEET",
+        "DOES NOT APPLY TO UAS",
+        "UAS ARE EXEMPT",
+        "UAS MAY OPERATE"
+    ];
+
+    for (const phrase of exemptionPhrases) {
+        if (text.includes(phrase)) {
+            return {
+                exempt: true,
+                reason: "NOTAM description indicates UAS may operate in accordance with guidelines."
+            };
+        }
+    }
+
+    return {exempt: false, reason: null} // return this if no exemptions
+}
+
+module.exports = { classifyNotam, checkUasExemption };

@@ -26,20 +26,6 @@
     <div id="assessment-detail"></div>
   </div>
 
-  <!-- ====== FLIGHT SESSION PAGE (hidden until checks pass) ====== -->
-  <div id="session-content" style="display:none;">
-    <h1>FLYTE</h1>
-    <h2>Flight Session Active</h2>
-
-    <div class="session-info">
-      <p><strong>Location:</strong> <span id="session-location"></span></p>
-      <p><strong>Started:</strong> <span id="session-time"></span></p>
-      <p>All preflight checks passed. Your flight session is now active.</p>
-    </div>
-
-    <button id="end-session" onclick="endFlightSession()">End Flight Session</button>
-  </div>
-
   <!-- geolocation must load first so userLocation is defined -->
   <script src="subprocesses/geolocation.js"></script>
   <script src="app.js"></script>

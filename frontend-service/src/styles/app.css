@@ -1,0 +1,23 @@
+.show-location-div {
+  margin-bottom: 1rem;
+}
+
+.map-container {
+  margin: 1.5rem 0;
+}
+
+.check-preflight-div {
+  margin-bottom: 1.5rem;
+}
+
+.location-status {
+  margin-bottom: 1.5rem;
+}
+
+.verdict-card.pass .verdict-icon, .verdict-label {
+  color: #22c55e;
+}
+
+.verdict-card.fail .verdict-icon, .verdict-label {
+  color: #ef4444;
+}

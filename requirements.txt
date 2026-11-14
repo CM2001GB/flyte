@@ -1,0 +1,36 @@
+frontend:
+vite - npm create vite@latest
+npm install
+npm install react-router-dom
+css - npm install @picocss/pico
+
+notam:
+express - npm install express
+better-sqlite-3 - npm i better-sqlite3
+cors - npm i cors
+fast xml parser - npm install fast-xml-parser
+
+weather:
+axios
+
+sunrise-sunset:
+express - npm install express
+better-sqlite-3 - npm i better-sqlite3
+
+flight-session:
+express - npm install express
+better-sqlite-3 - npm i better-sqlite3
+
+after-flight-reports:
+
+
+api-gateway:
+Ocelot - dotnet add package Ocelot
+Microsoft.AspNetCore.Authentication.JwtBearer - dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
+System.IdentityModel.Tokens.Jwt - dotnet add package System.IdentityModel.Tokens.Jwt
+Microsoft.IdentityModel.Tokens - dotnet add package Microsoft.IdentityModel.Tokens
+
+orchestrator:
+Microsoft.AspNetCore - dotnet new webapi -n Orchestrator --no-https
+
+

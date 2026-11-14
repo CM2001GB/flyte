@@ -27,14 +27,23 @@
             "UpstreamPathTemplate": "/api/weather",
             "UpstreamHttpMethod": [ "GET" ]
         },
-{
-            "DownstreamPathTemplate": "/sunrise-sunset/{everything}",
+        {
+            "DownstreamPathTemplate": "/flights/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
-                { "Host": "localhost", "Port": 3010 }
+                { "Host": "localhost", "Port": 8010 }
             ],
-            "UpstreamPathTemplate": "/api/sunrise-sunset/{everything}",
-            "UpstreamHttpMethod": [ "GET" ]
+            "UpstreamPathTemplate": "/api/flights/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/flights",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                { "Host": "localhost", "Port": 8010 }
+            ],
+            "UpstreamPathTemplate": "/api/flights/",
+            "UpstreamHttpMethod": [ "GET", "POST" ] 
         }
     ],
     "GlobalConfiguration": {

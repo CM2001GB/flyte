@@ -6,7 +6,7 @@ load_dotenv()
 class Config:
     MONGO_URI: str = os.getenv("MONGO_URI", "")
     PORT: int = int(os.getenv("PORT", "8002"))
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "dev-secret-change-me")
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "flyte1234")
     JWT_EXPIRES_MINUTES: int = int(os.getenv("JWT_EXPIRES_MINUTES", "60"))
     JWT_ALGORITHM: str = "HS256"
 

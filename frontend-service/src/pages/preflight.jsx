@@ -40,7 +40,7 @@ export default function Preflight() {
 
     try {
       const dateTime = new Date().toISOString();
-      const url = `/api/flight/assess?lat=${location.lat}&lon=${location.lon}&datetime=${dateTime}`;
+      const url = `/api/flight/assess?lat=${location.lat}&lon=${location.lon}&datetime=${dateTime}&radius=5`;
       const response = await fetch(url);
 
       if (!response.ok) {

@@ -13,7 +13,7 @@ db.exec(`
     CREATE TABLE IF NOT EXISTS flights (
         id              INTEGER PRIMARY KEY AUTOINCREMENT,
         flight_id       TEXT    UNIQUE NOT NULL,
-        user_id         TEXT    NOT NULL,
+        flyer_id         TEXT    NOT NULL,
         location        TEXT    NOT NULL,
         date            TEXT    NOT NULL,
         start_time      TEXT    NOT NULL,

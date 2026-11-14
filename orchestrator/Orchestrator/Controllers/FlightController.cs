@@ -22,7 +22,7 @@ public class FlightController : ControllerBase
     public async Task<IActionResult> Assess(
         [FromQuery] double lat,
         [FromQuery] double lon,
-        [FromQuery] double radius = 50,
+        [FromQuery] double radius = 5,
         [FromQuery] string? datetime = null)
     {
         var flightDatetime = datetime ?? DateTime.UtcNow.ToString("o");

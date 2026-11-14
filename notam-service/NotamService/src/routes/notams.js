@@ -28,7 +28,7 @@ router.get('/refresh', async (req, res) => {
 // ---------------------------------------
 
 router.get('/evaluate', (req, res) => {
-    const { lat, lon, radius = 50 } = req.query;
+    const { lat, lon, radius = 5 } = req.query;
 
     if (!lat || !lon) {
         return res.status(400).json({

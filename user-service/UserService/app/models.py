@@ -25,6 +25,7 @@ class LoginResponse(BaseModel):
     token: str
     user_id: str
     email: str
+    flyer_id: str
 
 class ProfileResponse(BaseModel):
     user_id: str

@@ -47,7 +47,7 @@ async def login(payload: LoginRequest):
 
     user_id = str(user["_id"])
     token = create_token(user_id, user["email"])
-    return LoginResponse(token=token, user_id=user_id, email=user["email"])
+    return LoginResponse(token=token, user_id=user_id, email=user["email"], flyer_id=user["flyer_id"])
 
 @router.post("/logout", response_model=MessageResponse)
 async def logout(token: str = Depends(extract_bearer)):

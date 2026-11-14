@@ -44,6 +44,33 @@
             ],
             "UpstreamPathTemplate": "/api/flights/",
             "UpstreamHttpMethod": [ "GET", "POST" ] 
+        },
+        {
+            "DownstreamPathTemplate": "/auth/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                { "Host": "localhost", "Port": 8002 }
+            ],
+            "UpstreamPathTemplate": "/api/auth/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST" ]             
+        },
+        {
+        "DownstreamPathTemplate": "/reports/{everything}",
+        "DownstreamScheme": "http",
+        "DownstreamHostAndPorts": [
+            { "Host": "localhost", "Port": 8011 }
+        ],
+        "UpstreamPathTemplate": "/api/reports/{everything}",
+        "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/reports",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                { "Host": "localhost", "Port": 8011 }
+            ],
+            "UpstreamPathTemplate": "/api/reports",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
         }
     ],
     "GlobalConfiguration": {

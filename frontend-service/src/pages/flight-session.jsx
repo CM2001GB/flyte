@@ -32,12 +32,17 @@ export default function FlightSession() {
         setError(null);
         setSuccess(null);
 
+
         try {
+            const flyerId = localStorage.getItem('flyerId');
+            if (!flyerId) {
+                throw new Error('Not logged in. Please log in first.');
+            }
             const response = await fetch('/api/flights', {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
                 body: JSON.stringify({
-                    userId: 'CM2001GB',
+                    flyerId: flyerId,
                     location: form.location,
                     date: form.date,
                     startTime: form.start_time,
@@ -50,7 +55,7 @@ export default function FlightSession() {
 
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(err.error || `Server returned: ${response.status}`)
+                throw new Error(err.detail || `Server returned: ${response.status}`)
             }
 
             const data = await response.json();

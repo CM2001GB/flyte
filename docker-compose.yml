@@ -18,6 +18,14 @@ services:
     networks:
       - flyte-network
 
+  user-service:
+    build:
+      context: ./user-service/UserService
+    ports: 8002:8002
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    networks: flyte-network
+
   orchestrator:
     build:
       context: ./orchestrator/Orchestrator
@@ -29,6 +37,7 @@ services:
       # inside Docker, services talk by container name, not localhost
       - NotamService__BaseUrl=http://notam-service:3000
       - WeatherService__BaseUrl=http://weather-service:8001
+      - UserService__BaseUrl=http://user-service:8002
     depends_on:
       - notam-service
       - weather-service

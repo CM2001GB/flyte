@@ -9,6 +9,13 @@ export default function FlightSession() {
     const navigate = useNavigate();
     const routeState = useLocation().state; // passed from preflight page
 
+    // redirect to login if not authenticated
+    useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            navigate('/');
+        }
+    }, [navigate]);
+
     const [form, setForm] = useState({
         location: routeState ? `${routeState.lat}, ${routeState.lon}` : '',
         date: new Date().toISOString().split('T')[0],
@@ -16,8 +23,8 @@ export default function FlightSession() {
         end_time: '',
         drone_model: '',
         flight_notes: ''
-    });  
-    
+    });
+
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
@@ -32,15 +39,16 @@ export default function FlightSession() {
         setError(null);
         setSuccess(null);
 
-
         try {
             const flyerId = localStorage.getItem('flyerId');
             if (!flyerId) {
                 throw new Error('Not logged in. Please log in first.');
             }
-            const response = await fetch('/api/flights', {
+
+            // submit flight via orchestrator (creates flight + report in one call)
+            const response = await fetch('/api/flight/submit', {
                 method: 'POST',
-                headers: { 'Content-Type' : 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     flyerId: flyerId,
                     location: form.location,
@@ -49,21 +57,21 @@ export default function FlightSession() {
                     endTime: form.end_time,
                     droneModel: form.drone_model,
                     flightNotes: form.flight_notes,
-                    status: routeState?.assessedAt ? 'approved' : 'pending'                        
+                    status: routeState?.assessedAt ? 'approved' : 'pending'
                 })
             });
 
             if (!response.ok) {
                 const err = await response.json();
-                throw new Error(err.detail || `Server returned: ${response.status}`)
+                throw new Error(err.error || `Server returned: ${response.status}`);
             }
 
-            const data = await response.json();
-            setSuccess(`Flight: ${data.flight_id} created.`);
-
+            const flightData = await response.json();
+            setSuccess(`Flight: ${flightData.flight_id} created.`);
             setTimeout(() => navigate('/reports'), 2000);
+
         } catch (err) {
-            setError(err.message)
+            setError(err.message);
         } finally {
             setSubmitting(false);
         }
@@ -114,8 +122,6 @@ export default function FlightSession() {
 
                 {error && <p style={{ color: 'var(--pico-color-red-500, #e53935)' }}>{error}</p>}
                 {success && <p style={{ color: 'var(--pico-color-green-500, #43a047)' }}>{success}</p>}
-
-                {/* <button type="submit" onClick={() => navigate('/flight-session')}>Submit Flight Session</button> */}
             </form>
 
         </main>

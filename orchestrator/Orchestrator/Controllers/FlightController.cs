@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Orchestrator.Services;
 
@@ -9,12 +10,18 @@ public class FlightController : ControllerBase
 {
     private readonly NotamServiceClient _notamClient;
     private readonly WeatherServiceClient _weatherClient;
+    private readonly FlightSessionServiceClient _flightClient;
+    private readonly AfterReportServiceClient _reportClient;
 
     public FlightController(NotamServiceClient notamClient,
-        WeatherServiceClient weatherClient)
+        WeatherServiceClient weatherClient,
+        FlightSessionServiceClient flightClient,
+        AfterReportServiceClient reportClient)
     {
         _notamClient = notamClient;
         _weatherClient = weatherClient;
+        _flightClient = flightClient;
+        _reportClient = reportClient;
     }
 
     // GET /orchestrator/flight/assess?lat=...&lon=...&radius=...&datetime=...
@@ -56,5 +63,52 @@ public class FlightController : ControllerBase
             },
             assessed_at = DateTime.UtcNow.ToString("o")
         });
+    }
+
+    // POST /orchestrator/flight/submit
+    // orchestrates: creates flight in flight-session service,
+    // then creates a report in the after-report service.
+    [HttpPost("submit")]
+    public async Task<IActionResult> Submit([FromBody] JsonElement body)
+    {
+        // 1. create the flight in the flight session service
+        JsonElement flightData;
+        try
+        {
+            flightData = await _flightClient.CreateFlightAsync(body);
+        }
+        catch (HttpRequestException ex)
+        {
+            return StatusCode(502, new { error = "Flight service error: " + ex.Message });
+        }
+
+        // 2. build the report payload using the returned flight_id
+        var flightId = flightData.GetProperty("flight_id").GetString();
+
+        var reportPayload = JsonSerializer.SerializeToElement(new
+        {
+            flightId = flightId,
+            flyerId = body.GetProperty("flyerId").GetString(),
+            location = body.GetProperty("location").GetString(),
+            date = body.GetProperty("date").GetString(),
+            startTime = body.TryGetProperty("startTime", out var st) ? st.GetString() : null,
+            endTime = body.TryGetProperty("endTime", out var et) ? et.GetString() : null,
+            droneModel = body.TryGetProperty("droneModel", out var dm) ? dm.GetString() : null,
+            flightNotes = body.TryGetProperty("flightNotes", out var fn) ? fn.GetString() : null,
+            status = body.TryGetProperty("status", out var s) ? s.GetString() : "pending"
+        });
+
+        // 3. create the report in the after-report service
+        try
+        {
+            await _reportClient.CreateReportAsync(reportPayload);
+        }
+        catch (HttpRequestException ex)
+        {
+            // flight was created but report failed - log it, don't fail the whole request
+            Console.WriteLine("[Orchestrator] Report creation failed: " + ex.Message);
+        }
+
+        return StatusCode(201, flightData);
     }
 }

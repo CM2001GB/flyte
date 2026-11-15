@@ -7,7 +7,7 @@
                 { "Host": "localhost", "Port": 3002 }
             ],
             "UpstreamPathTemplate": "/api/flight/{everything}",
-            "UpstreamHttpMethod": [ "GET" ]
+            "UpstreamHttpMethod": [ "GET", "POST" ]
         },
         {
             "DownstreamPathTemplate": "/notams/{everything}",
@@ -42,7 +42,7 @@
             "DownstreamHostAndPorts": [
                 { "Host": "localhost", "Port": 8010 }
             ],
-            "UpstreamPathTemplate": "/api/flights/",
+            "UpstreamPathTemplate": "/api/flights",
             "UpstreamHttpMethod": [ "GET", "POST" ] 
         },
         {

@@ -16,6 +16,19 @@ builder.Services.AddHttpClient("WeatherService", client => {
     client.Timeout = TimeSpan.FromSeconds(15);
 });
 
+builder.Services.AddHttpClient("FlightSessionService", client => {
+    client.BaseAddress = new Uri(
+        builder.Configuration["FlightSessionService:BaseUrl"] ??
+        "http://localhost:8010");
+        client.Timeout = TimeSpan.FromSeconds(15); 
+});
+
+builder.Services.AddHttpClient("AfterReportService", client => {
+    client.BaseAddress = new Uri(
+        builder.Configuration["AfterReportService:BaseUrl"] ?? "http://localhost:8011");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+
 // we will implement other services here like the notam service above
 // e.g. builder.Services.AddHttpClient("WeatherService", client => {...});
 // e.g. builder.Services.AddHttpClient("SunriseSunsetService", client => {...});
@@ -23,6 +36,8 @@ builder.Services.AddHttpClient("WeatherService", client => {
 // register typed service clients
 builder.Services.AddTransient<NotamServiceClient>();
 builder.Services.AddTransient<WeatherServiceClient>();
+builder.Services.AddTransient<FlightSessionServiceClient>();
+builder.Services.AddTransient<AfterReportServiceClient>();
 
 builder.Services.AddControllers();
 

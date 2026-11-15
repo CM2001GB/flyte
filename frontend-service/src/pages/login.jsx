@@ -44,7 +44,7 @@ const navigate = useNavigate();
             localStorage.setItem('flyerId', data.flyer_id); // if we don't, no other page knows about the auth
             setSuccess(`Login successful. Redirecting...`);
             
-            setTimeout(() => navigate('/preflight'), 2000);
+            setTimeout(() => navigate('/reports'), 2000);
         } catch (err) {
             setError(err.message)
         } finally {

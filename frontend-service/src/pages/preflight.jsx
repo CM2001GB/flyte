@@ -130,6 +130,15 @@ export default function Preflight() {
         </div>
     </div>
 
+    {/* Return to reports button */}
+    <div className="return-to-reports-div">
+        <div className="return-to-reports-container">
+            <button className="return-to-reports-btn" onClick={() => navigate('/reports')}>
+                {loading ? 'Returning to reports...' : 'Return to reports'}
+            </button>
+        </div>
+    </div>
+
       {/* Error */}
       {error && <div className="result-banner fail">{error}</div>}
 

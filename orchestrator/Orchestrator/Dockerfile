@@ -13,4 +13,5 @@ COPY --from=build /app/publish .
 
 EXPOSE 3002
 
+# port binding is set via ASPNETCORE_URLS in docker-compose
 ENTRYPOINT ["dotnet", "Orchestrator.dll"]

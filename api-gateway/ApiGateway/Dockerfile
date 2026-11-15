@@ -10,6 +10,8 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+# Override ocelot.json with Docker-specific config (container names instead of localhost)
+COPY ocelot.docker.json /app/ocelot.json
 
 EXPOSE 7000
 

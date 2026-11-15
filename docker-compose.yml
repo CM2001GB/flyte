@@ -3,6 +3,7 @@ services:
   notam-service:
     build:
       context: ./notam-service/NotamService
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
@@ -13,18 +14,50 @@ services:
   weather-service:
     build:
       context: ./weather-service/WeatherService
+      dockerfile: Dockerfile
     ports:
       - "8001:8001"
+    environment:
+      # bypass weather thresholds for end-to-end testing
+      - MAX_WIND_SPEED_KMH=999
+      - MAX_WIND_GUSTS_KMH=999
+      - MIN_VISIBILITY_M=1
+      - MAX_PRECIPITATION_MM=999
     networks:
       - flyte-network
 
   user-service:
     build:
       context: ./user-service/UserService
-    ports: 8002:8002
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
     environment:
       - MONGO_URI=${MONGO_URI}
-    networks: flyte-network
+    networks:
+      - flyte-network
+
+  flight-session-service:
+    build:
+      context: ./flight-session-service/FlightSessionService
+      dockerfile: Dockerfile
+    ports:
+      - "8010:8010"
+    volumes:
+      - flight-data:/app/data
+    networks:
+      - flyte-network
+
+  after-report-service:
+    build:
+      context: ./after-flight-report-service/AfterFlightReportService
+      dockerfile: Dockerfile
+    ports:
+      - "8011:8011"
+    volumes:
+      - report-data:/app/data
+    networks:
+      - flyte-network
 
   orchestrator:
     build:
@@ -38,9 +71,13 @@ services:
       - NotamService__BaseUrl=http://notam-service:3000
       - WeatherService__BaseUrl=http://weather-service:8001
       - UserService__BaseUrl=http://user-service:8002
+      - FlightSessionService__BaseUrl=http://flight-session-service:8010
+      - AfterReportService__BaseUrl=http://after-report-service:8011
     depends_on:
       - notam-service
       - weather-service
+      - flight-session-service
+      - after-report-service
     networks:
       - flyte-network
 
@@ -56,12 +93,28 @@ services:
       - orchestrator
       - notam-service
       - weather-service
+      - flight-session-service
+      - after-report-service
+      - user-service
+    networks:
+      - flyte-network
+
+  frontend:
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api-gateway
     networks:
       - flyte-network
 
 volumes:
-  notam-data: # named volume so DB survives container restarts
+  notam-data:
+  flight-data:
+  report-data:
 
 networks:
   flyte-network:
-    driver: bridge  # containers share this network and find each other by name
+    driver: bridge

@@ -71,7 +71,7 @@ public class FlightController : ControllerBase
     [HttpPost("submit")]
     public async Task<IActionResult> Submit([FromBody] JsonElement body)
     {
-        // 1. create the flight in the flight session service
+        // create the flight in the flight session service
         JsonElement flightData;
         try
         {
@@ -82,7 +82,7 @@ public class FlightController : ControllerBase
             return StatusCode(502, new { error = "Flight service error: " + ex.Message });
         }
 
-        // 2. build the report payload using the returned flight_id
+        // build the report payload using the returned flight_id
         var flightId = flightData.GetProperty("flight_id").GetString();
 
         var reportPayload = JsonSerializer.SerializeToElement(new
@@ -98,7 +98,7 @@ public class FlightController : ControllerBase
             status = body.TryGetProperty("status", out var s) ? s.GetString() : "pending"
         });
 
-        // 3. create the report in the after-report service
+        // create the report in the after-report service
         try
         {
             await _reportClient.CreateReportAsync(reportPayload);

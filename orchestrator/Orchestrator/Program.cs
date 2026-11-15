@@ -45,5 +45,6 @@ var app = builder.Build();
 
 app.MapControllers();
 
-Console.WriteLine("Orchestrator running on http://localhost:3002.");
-app.Run("http://localhost:3002");
+var url = builder.Configuration["ASPNETCORE_URLS"] ?? "http://localhost:3002";
+Console.WriteLine($"Orchestrator running on {url}.");
+app.Run();

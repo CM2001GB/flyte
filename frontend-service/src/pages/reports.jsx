@@ -173,6 +173,7 @@ export default function AfterFlightReports() {
             {/* Show selected report details */}
             {selectedReport && !editing && (
                 <div className="flight-details">
+
                     <h3>Report Details</h3>
                     <p><strong>Flight ID:</strong> {selectedReport.flight_id}</p>
                     <p><strong>Location:</strong> {selectedReport.location}</p>
@@ -185,12 +186,15 @@ export default function AfterFlightReports() {
                     <p><strong>Created:</strong> {selectedReport.created_at}</p>
                     <p><strong>Last Updated:</strong> {selectedReport.updated_at}</p>
 
-                    <div className="report-actions">
-                        <button onClick={handleEdit}>Edit Report</button>
-                        <button onClick={handleDelete} style={{ backgroundColor: 'var(--pico-color-red-500, #e53935)' }}>
-                            Delete Report
-                        </button>
+                    <div className="report-actions-div">
+                        <div className="report-actions-container">
+                            <button className="report-actions-btn" onClick={handleEdit}>Edit Report</button>
+                            <button className="report-actions-btn" onClick={handleDelete} style={{ backgroundColor: 'var(--pico-color-red-500, #e53935)' }}>
+                                Delete Report
+                            </button>
+                        </div>
                     </div>
+
                 </div>
             )}
 

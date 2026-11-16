@@ -93,8 +93,12 @@ export default function Register() {
                 <input type="text" id="flyer_id" name="flyer_id"
                     value={form.flyer_id} onChange={handleChange} required />
 
-                <button type="submit" disabled={submitting}>
+                <button className="register-btn" type="submit" disabled={submitting}>
                     {submitting ? 'Registering…' : 'Register'}
+                </button>
+
+                <button id="return-to-login" onClick={() => navigate('/')}>
+                    Return to Login
                 </button>
 
                 {error && <p style={{ color: 'var(--pico-color-red-500, #e53935)' }}>{error}</p>}

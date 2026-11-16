@@ -111,11 +111,11 @@ export default function Preflight() {
     {/* Map Frame */ }
     {location.lat && (
         <div className="map-container"> 
-            <iframe
+            <iframe className="map-iframe"
                 title="Your Location (approx)"
-                width="25%"
-                height="300"
-                style={{ border: '1px solid #ccc', borderRadius: '8px' }}
+                // width="25%"
+                // height="300"
+                // style={{ border: '1px solid #ccc', borderRadius: '8px' }}
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${location.lon - 0.01},${location.lat - 0.01},${location.lon + 0.01},${location.lat + 0.01}&layer=mapnik&marker=${location.lat},${location.lon}`}
                 />
         </div>     
@@ -134,7 +134,7 @@ export default function Preflight() {
     <div className="return-to-reports-div">
         <div className="return-to-reports-container">
             <button className="return-to-reports-btn" onClick={() => navigate('/reports')}>
-                {loading ? 'Returning to reports...' : 'Return to reports'}
+                Return to Reports
             </button>
         </div>
     </div>

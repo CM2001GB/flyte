@@ -17,12 +17,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8001:8001"
-    environment:
-      # bypass weather thresholds for end-to-end testing
-      - MAX_WIND_SPEED_KMH=999
-      - MAX_WIND_GUSTS_KMH=999
-      - MIN_VISIBILITY_M=1
-      - MAX_PRECIPITATION_MM=999
+    # environment:
+    #     bypass weather thresholds for end-to-end testing, uncomment for demo
+    #   - MAX_WIND_SPEED_KMH=999
+    #   - MAX_WIND_GUSTS_KMH=999
+    #   - MIN_VISIBILITY_M=1
+    #   - MAX_PRECIPITATION_MM=999
     networks:
       - flyte-network
 

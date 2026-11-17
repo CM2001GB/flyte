@@ -29,15 +29,19 @@ builder.Services.AddHttpClient("AfterReportService", client => {
     client.Timeout = TimeSpan.FromSeconds(15);
 });
 
-// we will implement other services here like the notam service above
-// e.g. builder.Services.AddHttpClient("WeatherService", client => {...});
-// e.g. builder.Services.AddHttpClient("SunriseSunsetService", client => {...});
+builder.Services.AddHttpClient("SunriseSunsetService", client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["SunriseSunsetService:BaseUrl"] ?? "http://localhost:8005");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
 
 // register typed service clients
 builder.Services.AddTransient<NotamServiceClient>();
 builder.Services.AddTransient<WeatherServiceClient>();
 builder.Services.AddTransient<FlightSessionServiceClient>();
 builder.Services.AddTransient<AfterReportServiceClient>();
+builder.Services.AddTransient<SunriseSunsetServiceClient>();
 
 builder.Services.AddControllers();
 

@@ -59,6 +59,17 @@ services:
     networks:
       - flyte-network
 
+  sunrise-sunset-service:
+    build:
+      context: ./sunrise-sunset-service/SunriseSunsetService
+      dockerfile: Dockerfile
+    ports:
+      - "8005:8005"
+    volumes:
+      - sunrise-data:/app/data
+    networks:
+      - flyte-network
+
   orchestrator:
     build:
       context: ./orchestrator/Orchestrator
@@ -73,11 +84,13 @@ services:
       - UserService__BaseUrl=http://user-service:8002
       - FlightSessionService__BaseUrl=http://flight-session-service:8010
       - AfterReportService__BaseUrl=http://after-report-service:8011
+      - SunriseSunsetService__BaseUrl=http://sunrise-sunset-service:8005
     depends_on:
       - notam-service
       - weather-service
       - flight-session-service
       - after-report-service
+      - sunrise-sunset-service
     networks:
       - flyte-network
 
@@ -96,6 +109,7 @@ services:
       - flight-session-service
       - after-report-service
       - user-service
+      - sunrise-sunset-service
     networks:
       - flyte-network
 
@@ -114,6 +128,7 @@ volumes:
   notam-data:
   flight-data:
   report-data:
+  sunrise-data:
 
 networks:
   flyte-network:

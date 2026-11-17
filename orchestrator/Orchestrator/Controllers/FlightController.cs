@@ -12,16 +12,19 @@ public class FlightController : ControllerBase
     private readonly WeatherServiceClient _weatherClient;
     private readonly FlightSessionServiceClient _flightClient;
     private readonly AfterReportServiceClient _reportClient;
+    private readonly SunriseSunsetServiceClient _sunClient;
 
     public FlightController(NotamServiceClient notamClient,
         WeatherServiceClient weatherClient,
         FlightSessionServiceClient flightClient,
-        AfterReportServiceClient reportClient)
+        AfterReportServiceClient reportClient,
+        SunriseSunsetServiceClient sunClient)
     {
         _notamClient = notamClient;
         _weatherClient = weatherClient;
         _flightClient = flightClient;
         _reportClient = reportClient;
+        _sunClient = sunClient;
     }
 
     // GET /orchestrator/flight/assess?lat=...&lon=...&radius=...&datetime=...
@@ -39,15 +42,18 @@ public class FlightController : ControllerBase
         // calls services in parallel
         var notamTask = _notamClient.EvaluateAsync(lat, lon, radius);
         var weatherTask = _weatherClient.EvaluateAsync(lat, lon, flightDatetime);
+        var sunTask = _sunClient.EvaluateAsync(lat, lon, flightDatetime);
 
-        await Task.WhenAll(notamTask, weatherTask);
+        await Task.WhenAll(notamTask, weatherTask, sunTask);
 
         var notamVerdict = await notamTask;
         var weatherVerdict = await weatherTask;
+        var sunVerdict = await sunTask;
 
         // overall: if ANY service says fail, do not fly
         var canFly = notamVerdict.Verdict == "pass"
-                  && weatherVerdict.Verdict == "pass";
+                  && weatherVerdict.Verdict == "pass"
+                  && sunVerdict.Verdict == "pass";
 
         return Ok(new
         {
@@ -58,8 +64,8 @@ public class FlightController : ControllerBase
             services = new
             {
                 notam = notamVerdict,
-                weather = weatherVerdict
-                // add sunrise_sunset here later
+                weather = weatherVerdict,
+                sunrise_sunset = sunVerdict
             },
             assessed_at = DateTime.UtcNow.ToString("o")
         });

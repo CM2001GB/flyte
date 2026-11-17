@@ -18,7 +18,7 @@ app.use(express.json()); // parse json request bodies
 app.use('/notams', notamsRouter);
 
 // Health check endpoint for docker and general monitoring purposes
-app.get('/health', (req, res) => {
+app.use('/health', (req, res) => {
     res.json({ status: 'ok', service: 'notam-service'});
 })
 

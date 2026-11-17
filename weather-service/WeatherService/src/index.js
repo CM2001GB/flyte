@@ -66,7 +66,7 @@ app.get('/weather', async (req, res) => {
   return res.status(200).json(result);
 });
 
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 if (require.main === module) {
   app.listen(config.port, () => console.log('Weather service listening on :' + config.port));

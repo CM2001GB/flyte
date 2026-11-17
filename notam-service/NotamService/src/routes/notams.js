@@ -285,4 +285,6 @@ router.get('/:id', (req, res) => {
     res.json(notam);
 });
 
+app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+
 module.exports = router;

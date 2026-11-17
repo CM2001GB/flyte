@@ -5,7 +5,7 @@ from app.db import get_users, get_sessions
 from app.models import (
     RegisterRequest, RegisterResponse,
     LoginRequest, LoginResponse,
-    ProfileResponse, MessageResponse,
+    ProfileResponse, MessageResponse
 )
 from app.auth import (
     hash_password, verify_password, create_token, decode_token, extract_bearer,

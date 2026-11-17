@@ -12,6 +12,19 @@ const { ingestNotams } = require('../../services/notam-ingester.js');
 // GET /notams - get NOTAMS for DB
 // ---------------------------------------
 
+// GET /notams/status - show database stats for persistence evidence
+router.get('/status', (req, res) => {
+    const count = db.prepare('SELECT COUNT(*) AS total FROM notams').get();
+    const latest = db.prepare('SELECT created_at FROM notams ORDER BY created_at DESC LIMIT 1').get();
+    const oldest = db.prepare('SELECT created_at FROM notams ORDER BY created_at ASC LIMIT 1').get();
+
+    res.json({
+        total_notams: count.total,
+        oldest_entry: oldest ? oldest.created_at : null,
+        latest_entry: latest ? latest.created_at : null
+    });
+});
+
 // in theory this function is literally just going to call NatsPibClient.js fetch/parse xml functions
 // to ensure the DB is populated/refreshed before the user's specific notam is fetched
 router.get('/refresh', async (req, res) => {
@@ -43,6 +56,12 @@ router.get('/evaluate', (req, res) => {
     if (isNaN(parsedLat) || isNaN(parsedLon) || isNaN(parsedRadius)) {
         return res.status(400).json({
             error: 'lat, lon, and radius must be valid numbers.'
+        });
+    }
+
+    if (parsedLat < -90 || parsedLat > 90 || parsedLon < -180 || parsedLon > 180) {
+        return res.status(400).json({
+            error: 'Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180.'
         });
     }
 
@@ -95,6 +114,12 @@ router.get('/nearby', (req, res) => {
     if (isNaN(parsedLat) || isNaN(parsedLon) || isNaN(parsedRadius)) {
         return res.status(400).json({
             error: 'lat, lon, and radius must be valid numbers.'
+        });
+    }
+
+    if (parsedLat < -90 || parsedLat > 90 || parsedLon < -180 || parsedLon > 180) {
+        return res.status(400).json({
+            error: 'Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180.'
         });
     }
 
@@ -155,6 +180,12 @@ router.get('/check', (req, res) => {
         });
     }
 
+    if (parsedLat < -90 || parsedLat > 90 || parsedLon < -180 || parsedLon > 180) {
+        return res.status(400).json({
+            error: 'Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180.'
+        });
+    }
+
     // 1: find all NOTAMs active on given date
     const activeNotams = db.prepare(`
         SELECT * FROM notams
@@ -189,7 +220,7 @@ router.get('/check', (req, res) => {
 // POST /notams - create new notam - TEST
 // ---------------------------------------
 
-router.post('/test1', (req, res) => {
+router.post('/newNotam', (req, res) => {
     const { title, description,
             latitude, longitude, radius,
             start_date, end_date,
@@ -235,7 +266,7 @@ router.post('/test1', (req, res) => {
 // ---------------------------------------
 // GET /notams - List all NOTAMs - TEST
 // ---------------------------------------
-router.get('/test2', (req, res) => {
+router.get('/listNotams', (req, res) => {
     const notams = db.prepare('SELECT * FROM notams').all();
     res.json(notams);
 })
@@ -244,14 +275,14 @@ router.get('/test2', (req, res) => {
 // GET /notams/:id - get single notam by ID - TEST
 // ---------------------------------------
 
-router.get('/test3/:id', (req, res) => {
-    const notam = db.prepare('SELECT * FROM notams WHERE notamId = ?').get(req.params.id);
+router.get('/:id', (req, res) => {
+    const notam = db.prepare('SELECT * FROM notams WHERE id = ?').get(req.params.id);
 
     if (!notam) {
-        return res.status(404).json({ error: 'NOTAM not found.'});
+        return res.status(404).json({ error: 'NOTAM not found.' });
     }
 
     res.json(notam);
-})
+});
 
 module.exports = router;

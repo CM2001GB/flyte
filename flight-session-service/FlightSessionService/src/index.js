@@ -49,6 +49,20 @@ app.post('/flights', (req, res) => {
         });
     }
 
+    // validate date format (YYYY-MM-DD)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isNaN(new Date(date).getTime())) {
+        return res.status(400).json({ error: 'date must be a valid date in YYYY-MM-DD format.' });
+    }
+
+    // validate time format (HH:MM) if provided
+    const timeRegex = /^\d{2}:\d{2}$/;
+    if (start_time && !timeRegex.test(start_time)) {
+        return res.status(400).json({ error: 'startTime must be in HH:MM format.' });
+    }
+    if (end_time && !timeRegex.test(end_time)) {
+        return res.status(400).json({ error: 'endTime must be in HH:MM format.' });
+    }
+
     try {
         const flightId = uuidv4(); // we use uuidv4 for unique flyer id because it's neat
 

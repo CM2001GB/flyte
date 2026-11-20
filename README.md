@@ -15,17 +15,17 @@ Drone pilots must verify multiple factors like NOTAMs, weather and daylight befo
 
 ## Architecture
 
-Client (React frontend)
-|
-API Gateway (ASP.NET Core, Ocelot)
+1.Client (React frontend)
+
+2.API Gateway (ASP.NET Core, Ocelot)
   /api/auth | /api/weather | /api/flight
-|
-User Service Weather Service Orchestrator
+
+3.User Service Weather Service Orchestrator
 (FastAPI, (Express, (ASP.NET Core)
 MongoDB Atlas) SQLite, SQLite)
 Open-Meteo)
-|
-NOTAM Service + Sunrise-Sunset Service
+
+4.NOTAM Service + Sunrise-Sunset Service
 (Express, SQLite)
 
 Each service is independently deployable and owns its own database. Each service communicates over HTTP. 

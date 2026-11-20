@@ -77,6 +77,7 @@ JWT_EXPIRES_MINUTES=60
 
 # Build and start
 docker compose up --build
+'''
 
 Once all 9 containers are running:
 

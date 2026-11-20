@@ -106,7 +106,7 @@ Gateway: Ocelot (ASP.NET Core)
 Auth: JWT (HS256) + bcrypt password hashing
 
 
-Student	Service(s) Built	Student Number
+Student	Service(s) Built	
 
 Callum Miller: NOTAM Service, API Gateway, Orchestrator, Azure Deployment, Docker Containerisation, Frontend 
 

@@ -106,9 +106,9 @@ Auth: JWT (HS256) + bcrypt password hashing
 
 
 Student	Service(s) Built	Student Number
-Me: NOTAM Service, API Gateway, Orchestrator, Azure Deployment, Docker Containerisation, Frontend 
+Callum Miller: NOTAM Service, API Gateway, Orchestrator, Azure Deployment, Docker Containerisation, Frontend 
 Ibraheem Asim -	Weather Service, User Service, MongoDB Atlas setup, Contributed to API Gateway and Orchestrator
-Jubair: Sunset/Sunrise Service, Frontend, contributed to API Gateway and Orchestrator
+Jubair Rahman Jim: Sunset/Sunrise Service, Frontend, contributed to API Gateway and Orchestrator
  
 
 

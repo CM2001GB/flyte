@@ -1,0 +1,79 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/orchestrator/flight/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "orchestrator.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/flight/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/notams/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "notam-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/notams/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/weather",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "weather-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/weather",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+            "DownstreamPathTemplate": "/flights/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "flight-session-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/flights/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/flights",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "flight-session-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/flights",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/auth/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "user-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/auth/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/reports/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "after-report-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/reports/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/reports",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                { "Host": "after-report-service.greenstone-e5d6ceb4.germanywestcentral.azurecontainerapps.io", "Port": 443 }
+            ],
+            "UpstreamPathTemplate": "/api/reports",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "http://localhost:7000"
+    }
+}

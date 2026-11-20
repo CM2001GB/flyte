@@ -1,0 +1,64 @@
+.container {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.show-location-div {
+  margin-bottom: 1rem;
+}
+
+.map-container {
+  margin: 1.5rem 0;
+}
+
+.check-preflight-div {
+  margin-bottom: 1.5rem;
+}
+
+.location-status {
+  margin-bottom: 1.5rem;
+}
+
+.verdict-card.pass .verdict-icon,
+.verdict-card.pass .verdict-label {
+  color: #22c55e;
+}
+
+.verdict-card.fail .verdict-icon,
+.verdict-card.fail .verdict-label {
+  color: #ef4444;
+}
+
+/* forms - constrain width and centre */
+.session-menu-input {
+  max-width: 480px;
+}
+
+/* Report page button groups */
+.report-actions-container button,
+.report-actions button,
+.user-options-menu button {
+  width: auto;
+  padding: 0.5rem 1.25rem;
+  margin-right: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.user-options-menu {
+  display: flex;
+  gap: 0.02rem;
+  margin-top: 0.10rem;
+}
+
+.register-btn {
+  max-width: 480px;
+}
+
+.map-iframe {
+  width: 100%;
+  height: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}

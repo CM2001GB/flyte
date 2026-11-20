@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FLYTE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ====== PREFLIGHT PAGE ====== -->
+  <div id="main-content">
+    <h1>FLYTE</h1>
+    <h2>The Drone Companion App</h2>
+
+    <div class="controls">
+      <button id="pf-safety">Preflight Safety Check</button>
+      <button id="find-me">Show my location</button>
+    </div>
+
+    <p id="status"></p>
+    <a id="map-link" href="" target="_blank">Location unknown</a>
+
+    <!-- assessment results appear here -->
+    <div id="assessment-result" class="result"></div>
+    <div id="assessment-detail"></div>
+  </div>
+
+  <!-- geolocation must load first so userLocation is defined -->
+  <script src="subprocesses/geolocation.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

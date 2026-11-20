@@ -1,0 +1,138 @@
+services:
+
+  notam-service:
+    build:
+      context: ./notam-service/NotamService
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - notam-data:/app/data
+    networks:
+      - flyte-network
+
+  weather-service:
+    build:
+      context: ./weather-service/WeatherService
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - weather-data:/app/data
+    # environment:
+    #     bypass weather thresholds for end-to-end testing, uncomment for demo
+    #   - MAX_WIND_SPEED_KMH=999
+    #   - MAX_WIND_GUSTS_KMH=999
+    #   - MIN_VISIBILITY_M=1
+    #   - MAX_PRECIPITATION_MM=999
+    networks:
+      - flyte-network
+
+  user-service:
+    build:
+      context: ./user-service/UserService
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    networks:
+      - flyte-network
+
+  flight-session-service:
+    build:
+      context: ./flight-session-service/FlightSessionService
+      dockerfile: Dockerfile
+    ports:
+      - "8010:8010"
+    volumes:
+      - flight-data:/app/data
+    networks:
+      - flyte-network
+
+  after-report-service:
+    build:
+      context: ./after-flight-report-service/AfterFlightReportService
+      dockerfile: Dockerfile
+    ports:
+      - "8011:8011"
+    volumes:
+      - report-data:/app/data
+    networks:
+      - flyte-network
+
+  sunrise-sunset-service:
+    build:
+      context: ./sunrise-sunset-service/SunriseSunsetService
+      dockerfile: Dockerfile
+    ports:
+      - "8005:8005"
+    volumes:
+      - sunrise-data:/app/data
+    networks:
+      - flyte-network
+
+  orchestrator:
+    build:
+      context: ./orchestrator/Orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - ASPNETCORE_URLS=http://+:3002
+      # inside Docker, services talk by container name, not localhost
+      - NotamService__BaseUrl=http://notam-service:3000
+      - WeatherService__BaseUrl=http://weather-service:8001
+      - UserService__BaseUrl=http://user-service:8002
+      - FlightSessionService__BaseUrl=http://flight-session-service:8010
+      - AfterReportService__BaseUrl=http://after-report-service:8011
+      - SunriseSunsetService__BaseUrl=http://sunrise-sunset-service:8005
+    depends_on:
+      - notam-service
+      - weather-service
+      - flight-session-service
+      - after-report-service
+      - sunrise-sunset-service
+    networks:
+      - flyte-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway/ApiGateway
+      dockerfile: Dockerfile
+    ports:
+      - "7000:7000"
+    environment:
+      - ASPNETCORE_URLS=http://+:7000
+    depends_on:
+      - orchestrator
+      - notam-service
+      - weather-service
+      - flight-session-service
+      - after-report-service
+      - user-service
+      - sunrise-sunset-service
+    networks:
+      - flyte-network
+
+  frontend:
+    build:
+      context: ./frontend-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api-gateway
+    networks:
+      - flyte-network
+
+volumes:
+  notam-data:
+  flight-data:
+  report-data:
+  sunrise-data:
+  weather-data:
+
+networks:
+  flyte-network:
+    driver: bridge

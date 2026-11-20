@@ -64,20 +64,20 @@ The API Gateway is the single entry point and the orchestrator coordinates multi
 **Prerequisites:** Docker Engine + Docker Compose, Git
 
 ```bash
-# Clone
+# Clone the repository
 git clone https://github.com/CM2001GB/flyte.git
 cd flyte
 
-# Configure environment
-.env file 
+# Create .env at the repository root with these values:
+cat > .env << 'EOF'
 MONGO_URI=mongodb+srv://flyte:flytepass123@flyte.lcgfrik.mongodb.net/flyte
 JWT_SECRET=flyte1234
 JWT_EXPIRES_MINUTES=60
+EOF
 
-
-# Build and start
+# Build and start the full stack
 docker compose up --build
-'''
+```
 
 Once all 9 containers are running:
 

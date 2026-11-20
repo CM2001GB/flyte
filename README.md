@@ -115,7 +115,7 @@ Ibraheem Asim -	Weather Service, User Service, MongoDB Atlas setup, Contributed 
 Jubair Rahman Jim: Sunset/Sunrise Service, Frontend, contributed to API Gateway and Orchestrator
  
 
-
+```
 flyte/
 |-- api-gateway/                  # ASP.NET Core gateway (Ocelot)
 |-- orchestrator/                 # ASP.NET Core orchestration service
@@ -129,7 +129,8 @@ flyte/
 |-- client/                       # Prototype frontend (legacy)
 |-- docker-compose.yml            # Full stack definition
 |-- README.md                     # This file
-|-- requirements.txt              # Shared Python dependencies
+`-- requirements.txt              # Shared Python dependencies
+```
 
 
 ## Key Design Decisions

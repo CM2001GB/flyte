@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config();
 const num = (v, fallback) => (v !== undefined ? Number(v) : fallback);
 module.exports = {
@@ -12,5 +13,6 @@ module.exports = {
     minVisibilityM:     num(process.env.MIN_VISIBILITY_M, 5000),
     maxPrecipitationMm: num(process.env.MAX_PRECIPITATION_MM, 1),
   },
-  auditDbPath: process.env.AUDIT_DB_PATH || './weather_audit.db',
+  // auditDbPath: process.env.AUDIT_DB_PATH || './weather_audit.db',
+  auditDbPath: process.env.AUDIT_DB_PATH || path.join(__dirname, '..', 'data', 'weather_audit.db'),
 };

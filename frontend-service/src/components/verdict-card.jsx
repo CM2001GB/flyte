@@ -5,7 +5,7 @@ export default function VerdictCard({ name, verdict }) {
     <div className={`verdict-card ${isPassed ? 'pass' : 'fail'}`}>
       <div className="verdict-header">
         <span className="verdict-icon">{isPassed ? '✓ ' : '✗ '}</span>
-        <strong>{name.toUpperCase()}</strong>
+        <strong>{name.replace(/_/g, '/').toUpperCase()}</strong>
         <span className="verdict-label">{isPassed ? ' PASS' : ' FAIL'}</span>
       </div>
 

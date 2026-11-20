@@ -17,6 +17,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8001:8001"
+    volumes:
+      - weather-data:/app/data
     # environment:
     #     bypass weather thresholds for end-to-end testing, uncomment for demo
     #   - MAX_WIND_SPEED_KMH=999
@@ -129,6 +131,7 @@ volumes:
   flight-data:
   report-data:
   sunrise-data:
+  weather-data:
 
 networks:
   flyte-network:

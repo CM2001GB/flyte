@@ -30,19 +30,29 @@ public class FlightController : ControllerBase
     // GET /orchestrator/flight/assess?lat=...&lon=...&radius=...&datetime=...
     [HttpGet("assess")]
     public async Task<IActionResult> Assess(
-        [FromQuery] double lat,
-        [FromQuery] double lon,
+        [FromQuery] double? lat,
+        [FromQuery] double? lon,
         [FromQuery] double radius = 5,
         [FromQuery] string? datetime = null)
     {
+        if (lat is null || lon is null)
+        {
+            return BadRequest(new { error="lat/lon query parameters are required." });
+        }
+
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180)
+        {
+            return BadRequest(new { error = "lat must be between -90 and 90, lon between -180 and 180." });
+        }
+
         var flightDatetime = datetime ?? DateTime.UtcNow.ToString("o");
 
         // refresh notams, repopulates DB.
         await _notamClient.RefreshNotamsAsync();
         // calls services in parallel
-        var notamTask = _notamClient.EvaluateAsync(lat, lon, radius);
-        var weatherTask = _weatherClient.EvaluateAsync(lat, lon, flightDatetime);
-        var sunTask = _sunClient.EvaluateAsync(lat, lon, flightDatetime);
+        var notamTask = _notamClient.EvaluateAsync(lat.Value, lon.Value, radius);
+        var weatherTask = _weatherClient.EvaluateAsync(lat.Value, lon.Value, flightDatetime);
+        var sunTask = _sunClient.EvaluateAsync(lat.Value, lon.Value, flightDatetime);
 
         await Task.WhenAll(notamTask, weatherTask, sunTask);
 

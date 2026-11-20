@@ -1,10 +1,9 @@
 // SQLite audit log for sunrise-sunset evaluations
-// Matches the standardised DB pattern used across Flyte services
 
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const dbPath = path.join(__dirname, '..', 'sunrise_sunset_audit.db');
+const dbPath = path.join(__dirname, '..', 'data', 'sunrise_sunset_audit.db');
 const db = new Database(dbPath);
 
 // WAL mode for better concurrent read performance
